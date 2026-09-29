@@ -1,0 +1,395 @@
+openapi: 3.1.0
+info:
+  title: API de Integración SOA - Fintech
+  description: |
+    Contrato de integración entre los servicios de gestión de cuentas, procesamiento de pagos y notificaciones.
+    Aplica patrones de integración para garantizar consistencia y escalabilidad.
+  version: 1.0.0
+  contact:
+    name: Equipo de Arquitectura
+    email: arquitectura@fintech.com
+servers:
+  - url: https://api.fintech.com/v1
+    description: Servidor de producción
+paths:
+  /accounts:
+    post:
+      tags:
+        - Gestión de Cuentas
+      summary: Crear una nueva cuenta
+      description: Crea una nueva cuenta en el sistema.
+      operationId: createAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+            examples:
+              example1:
+                value:
+                  customerId: "CUST12345"
+                  accountType: "SAVINGS"
+                  initialBalance: 1000.00
+                  currency: "USD"
+      responses:
+        '201':
+          description: Cuenta creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+              examples:
+                example1:
+                  value:
+                    accountId: "ACC67890"
+                    customerId: "CUST12345"
+                    accountType: "SAVINGS"
+                    balance: 1000.00
+                    currency: "USD"
+                    status: "ACTIVE"
+        '400':
+          description: Solicitud inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  value:
+                    code: "INVALID_REQUEST"
+                    message: "El tipo de cuenta no es válido."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  value:
+                    code: "INTERNAL_ERROR"
+                    message: "Ocurrió un error inesperado."
+
+  /accounts/{accountId}:
+    get:
+      tags:
+        - Gestión de Cuentas
+      summary: Obtener detalles de una cuenta
+      description: Retorna los detalles de una cuenta específica.
+      operationId: getAccount
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+          examples:
+            example1:
+              value: "ACC67890"
+      responses:
+        '200':
+          description: Detalles de la cuenta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+              examples:
+                example1:
+                  value:
+                    accountId: "ACC67890"
+                    customerId: "CUST12345"
+                    accountType: "SAVINGS"
+                    balance: 1000.00
+                    currency: "USD"
+                    status: "ACTIVE"
+        '404':
+          description: Cuenta no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  value:
+                    code: "ACCOUNT_NOT_FOUND"
+                    message: "La cuenta no existe."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /payments:
+    post:
+      tags:
+        - Procesamiento de Pagos
+      summary: Procesar un pago
+      description: Procesa un pago entre cuentas.
+      operationId: processPayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+            examples:
+              example1:
+                value:
+                  sourceAccountId: "ACC67890"
+                  targetAccountId: "ACC54321"
+                  amount: 500.00
+                  currency: "USD"
+                  description: "Transferencia entre cuentas"
+      responses:
+        '200':
+          description: Pago procesado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+              examples:
+                example1:
+                  value:
+                    paymentId: "PAY12345"
+                    status: "COMPLETED"
+                    sourceAccountId: "ACC67890"
+                    targetAccountId: "ACC54321"
+                    amount: 500.00
+                    currency: "USD"
+        '400':
+          description: Solicitud inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  value:
+                    code: "INVALID_AMOUNT"
+                    message: "El monto debe ser mayor que cero."
+        '404':
+          description: Cuenta no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  value:
+                    code: "ACCOUNT_NOT_FOUND"
+                    message: "La cuenta origen o destino no existe."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /notifications:
+    post:
+      tags:
+        - Notificaciones
+      summary: Enviar una notificación
+      description: Envía una notificación a un cliente.
+      operationId: sendNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+            examples:
+              example1:
+                value:
+                  customerId: "CUST12345"
+                  message: "Su pago de $500.00 ha sido procesado."
+                  channel: "EMAIL"
+      responses:
+        '200':
+          description: Notificación enviada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+              examples:
+                example1:
+                  value:
+                    notificationId: "NOTIF7890"
+                    status: "SENT"
+        '400':
+          description: Solicitud inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  value:
+                    code: "INVALID_CHANNEL"
+                    message: "El canal de notificación no es válido."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    AccountRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: Identificador del cliente.
+        accountType:
+          type: string
+          enum: ["SAVINGS", "CHECKING", "LOAN"]
+          description: Tipo de cuenta.
+        initialBalance:
+          type: number
+          format: double
+          description: Saldo inicial de la cuenta.
+        currency:
+          type: string
+          description: Moneda de la cuenta.
+      required:
+        - customerId
+        - accountType
+        - initialBalance
+        - currency
+
+    AccountResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: Identificador único de la cuenta.
+        customerId:
+          type: string
+          description: Identificador del cliente.
+        accountType:
+          type: string
+          enum: ["SAVINGS", "CHECKING", "LOAN"]
+          description: Tipo de cuenta.
+        balance:
+          type: number
+          format: double
+          description: Saldo actual de la cuenta.
+        currency:
+          type: string
+          description: Moneda de la cuenta.
+        status:
+          type: string
+          enum: ["ACTIVE", "INACTIVE", "SUSPENDED"]
+          description: Estado de la cuenta.
+      required:
+        - accountId
+        - customerId
+        - accountType
+        - balance
+        - currency
+        - status
+
+    PaymentRequest:
+      type: object
+      properties:
+        sourceAccountId:
+          type: string
+          description: Identificador de la cuenta origen.
+        targetAccountId:
+          type: string
+          description: Identificador de la cuenta destino.
+        amount:
+          type: number
+          format: double
+          description: Monto del pago.
+        currency:
+          type: string
+          description: Moneda del pago.
+        description:
+          type: string
+          description: Descripción del pago.
+      required:
+        - sourceAccountId
+        - targetAccountId
+        - amount
+        - currency
+
+    PaymentResponse:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          description: Identificador único del pago.
+        status:
+          type: string
+          enum: ["PENDING", "COMPLETED", "FAILED"]
+          description: Estado del pago.
+        sourceAccountId:
+          type: string
+          description: Identificador de la cuenta origen.
+        targetAccountId:
+          type: string
+          description: Identificador de la cuenta destino.
+        amount:
+          type: number
+          format: double
+          description: Monto del pago.
+        currency:
+          type: string
+          description: Moneda del pago.
+      required:
+        - paymentId
+        - status
+        - sourceAccountId
+        - targetAccountId
+        - amount
+        - currency
+
+    NotificationRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: Identificador del cliente.
+        message:
+          type: string
+          description: Mensaje de la notificación.
+        channel:
+          type: string
+          enum: ["EMAIL", "SMS", "PUSH"]
+          description: Canal de notificación.
+      required:
+        - customerId
+        - message
+        - channel
+
+    NotificationResponse:
+      type: object
+      properties:
+        notificationId:
+          type: string
+          description: Identificador único de la notificación.
+        status:
+          type: string
+          enum: ["SENT", "FAILED"]
+          description: Estado de la notificación.
+      required:
+        - notificationId
+        - status
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código de error.
+        message:
+          type: string
+          description: Mensaje de error descriptivo.
+      required:
+        - code
+        - message

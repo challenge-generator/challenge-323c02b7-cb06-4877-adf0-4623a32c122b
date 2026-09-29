@@ -1,0 +1,18 @@
+origen,destino,tipo,obligatorio,regla_transformacion,ejemplo_origen,ejemplo_destino
+customerId,customerId,string,SI,Directo,CUST12345,CUST12345
+accountType,accountType,string,SI,Mapeo estático: SAVINGS->AHORROS; CHECKING->CORRIENTE; LOAN->PRESTAMO,SAVINGS,AHORROS
+initialBalance,saldo_inicial,number,SI,Directo,1000.00,1000.00
+currency,currency,string,SI,Mapeo estático: USD->DOLAR; EUR->EURO; COP->PESO_COLOMBIANO,USD,DOLAR
+accountId,id_cuenta,string,SI,Directo,ACC67890,ACC67890
+balance,saldo_actual,number,SI,Directo,1000.00,1000.00
+status,estado_cuenta,string,SI,Mapeo estático: ACTIVE->ACTIVA; INACTIVE->INACTIVA; SUSPENDED->SUSPENDIDA,ACTIVE,ACTIVA
+sourceAccountId,cuenta_origen,string,SI,Directo,ACC67890,ACC67890
+targetAccountId,cuenta_destino,string,SI,Directo,ACC54321,ACC54321
+amount,monto,number,SI,Directo,500.00,500.00
+description,descripcion,string,NO,Directo,"Transferencia entre cuentas","Transferencia entre cuentas"
+paymentId,id_pago,string,SI,Directo,PAY12345,PAY12345
+paymentStatus,estado_pago,string,SI,Mapeo estático: PENDING->PENDIENTE; COMPLETED->COMPLETADO; FAILED->FALLIDO,COMPLETED,COMPLETADO
+message,mensaje,string,SI,Directo,"Su pago de $500.00 ha sido procesado.","Su pago de $500.00 ha sido procesado."
+channel,canal,string,SI,Mapeo estático: EMAIL->CORREO; SMS->SMS; PUSH->NOTIFICACION_PUSH,EMAIL,CORREO
+notificationId,id_notificacion,string,SI,Directo,NOTIF7890,NOTIF7890
+notificationStatus,estado_notificacion,string,SI,Mapeo estático: SENT->ENVIADA; FAILED->FALLIDA,SENT,ENVIADA
